@@ -50,10 +50,8 @@ async def test_update_query():
 
 async def test_update_many(preset_documents):
     await Sample.find_many(Sample.increment > 4).find_many(
-        Sample.nested.optional == None
-    ).update(
-        Set({Sample.increment: 100})
-    )  # noqa
+        Sample.nested.optional is None
+    ).update(Set({Sample.increment: 100}))
     result = await Sample.find_many(Sample.increment == 100).to_list()
     assert len(result) == 3
     for sample in result:
@@ -62,10 +60,8 @@ async def test_update_many(preset_documents):
 
 async def test_update_many_linked_method(preset_documents):
     await Sample.find_many(Sample.increment > 4).find_many(
-        Sample.nested.optional == None
-    ).update_many(
-        Set({Sample.increment: 100})
-    )  # noqa
+        Sample.nested.optional is None
+    ).update_many(Set({Sample.increment: 100}))
     result = await Sample.find_many(Sample.increment == 100).to_list()
     assert len(result) == 3
     for sample in result:
@@ -113,7 +109,7 @@ async def test_update_self(preset_documents):
 async def test_update_many_with_session(preset_documents, session):
     q = (
         Sample.find_many(Sample.increment > 4)
-        .find_many(Sample.nested.optional == None)
+        .find_many(Sample.nested.optional is None)
         .update(Set({Sample.increment: 100}))
         .set_session(session=session)
     )
@@ -121,14 +117,14 @@ async def test_update_many_with_session(preset_documents, session):
 
     q = (
         Sample.find_many(Sample.increment > 4)
-        .find_many(Sample.nested.optional == None)
+        .find_many(Sample.nested.optional is None)
         .update(Set({Sample.increment: 100}), session=session)
     )
     assert q.session == session
 
     q = (
         Sample.find_many(Sample.increment > 4)
-        .find_many(Sample.nested.optional == None, session=session)
+        .find_many(Sample.nested.optional is None, session=session)
         .update(Set({Sample.increment: 100}))
     )
     assert q.session == session

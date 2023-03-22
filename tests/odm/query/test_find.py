@@ -31,18 +31,16 @@ async def test_find_query():
 async def test_find_many(preset_documents):
     result = (
         await Sample.find_many(Sample.integer > 1)
-        .find_many(Sample.nested.optional == None)
+        .find_many(Sample.nested.optional is None)
         .to_list()
-    )  # noqa
+    )
     assert len(result) == 2
     for a in result:
         assert a.integer > 1
         assert a.nested.optional is None
 
     len_result = 0
-    async for a in Sample.find_many(Sample.integer > 1).find_many(
-        Sample.nested.optional == None
-    ):  # noqa
+    async for a in Sample.find_many(Sample.integer > 1).find_many(Sample.nested.optional is None):  # noqa
         assert a in result
         len_result += 1
 
@@ -58,7 +56,7 @@ async def test_find_many_skip(preset_documents):
 
     result = (
         await Sample.find_many(Sample.increment > 2)
-        .find_many(Sample.nested.optional == None)
+        .find_many(Sample.nested.optional is None)
         .skip(1)
         .to_list()
     )
@@ -68,11 +66,7 @@ async def test_find_many_skip(preset_documents):
         assert sample.nested.optional is None
 
     len_result = 0
-    async for sample in Sample.find_many(Sample.increment > 2).find_many(
-        Sample.nested.optional == None
-    ).skip(
-        1
-    ):  # noqa
+    async for sample in Sample.find_many(Sample.increment > 2).find_many(Sample.nested.optional is None).skip(1):  # noqa
         assert sample in result
         len_result += 1
 
@@ -88,22 +82,18 @@ async def test_find_many_limit(preset_documents):
 
     result = (
         await Sample.find_many(Sample.increment > 2)
-        .find_many(Sample.nested.optional == None)
+        .find_many(Sample.nested.optional is None)
         .sort(Sample.increment)
         .limit(2)
         .to_list()
-    )  # noqa
+    )
     assert len(result) == 2
     for a in result:
         assert a.increment > 2
         assert a.nested.optional is None
 
     len_result = 0
-    async for a in Sample.find_many(Sample.increment > 2).find(
-        Sample.nested.optional == None
-    ).sort(Sample.increment).limit(
-        2
-    ):  # noqa
+    async for a in Sample.find_many(Sample.increment > 2).find(Sample.nested.optional is None).sort(Sample.increment).limit(2):  # noqa
         assert a in result
         len_result += 1
 
@@ -124,21 +114,21 @@ async def test_find_all(preset_documents):
 
 async def test_find_one(preset_documents):
     a = await Sample.find_one(Sample.integer > 1).find_one(
-        Sample.nested.optional == None
-    )  # noqa
+        Sample.nested.optional is None
+    )
     assert a.integer > 1
     assert a.nested.optional is None
 
     a = await Sample.find_one(Sample.integer > 100).find_one(
-        Sample.nested.optional == None
-    )  # noqa
+        Sample.nested.optional is None
+    )
     assert a is None
 
 
 async def test_get(preset_documents):
     a = await Sample.find_one(Sample.integer > 1).find_one(
-        Sample.nested.optional == None
-    )  # noqa
+        Sample.nested.optional is None
+    )
     assert a.integer > 1
     assert a.nested.optional is None
 
@@ -212,13 +202,14 @@ async def test_sort(preset_documents):
 
 
 async def test_find_many_with_projection(preset_documents):
+
     class SampleProjection(BaseModel):
         string: str
         integer: int
 
     result = (
         await Sample.find_many(Sample.integer > 1)
-        .find_many(Sample.nested.optional == None)
+        .find_many(Sample.nested.optional is None)
         .project(projection_model=SampleProjection)
         .to_list()
     )
@@ -230,7 +221,7 @@ async def test_find_many_with_projection(preset_documents):
     result = (
         await Sample.find_many(Sample.integer > 1)
         .find_many(
-            Sample.nested.optional == None, projection_model=SampleProjection
+            Sample.nested.optional is None, projection_model=SampleProjection
         )
         .to_list()
     )
@@ -241,6 +232,7 @@ async def test_find_many_with_projection(preset_documents):
 
 
 async def test_find_many_with_custom_projection(preset_documents):
+
     class SampleProjection(BaseModel):
         string: str
         i: int
@@ -250,7 +242,7 @@ async def test_find_many_with_custom_projection(preset_documents):
 
     result = (
         await Sample.find_many(Sample.integer > 1)
-        .find_many(Sample.nested.optional == None)
+        .find_many(Sample.nested.optional is None)
         .project(projection_model=SampleProjection)
         .sort(Sample.nested.integer)
         .to_list()
@@ -264,13 +256,13 @@ async def test_find_many_with_custom_projection(preset_documents):
 async def test_find_many_with_session(preset_documents, session):
     q_1 = (
         Sample.find_many(Sample.integer > 1)
-        .find_many(Sample.nested.optional == None)
+        .find_many(Sample.nested.optional is None)
         .set_session(session)
     )
     assert q_1.session == session
 
     q_2 = Sample.find_many(Sample.integer > 1).find_many(
-        Sample.nested.optional == None, session=session
+        Sample.nested.optional is None, session=session
     )
     assert q_2.session == session
 
@@ -282,9 +274,7 @@ async def test_find_many_with_session(preset_documents, session):
         assert a.nested.optional is None
 
     len_result = 0
-    async for a in Sample.find_many(Sample.integer > 1).find_many(
-        Sample.nested.optional == None
-    ):  # noqa
+    async for a in Sample.find_many(Sample.integer > 1).find_many(Sample.nested.optional is None):  # noqa
         assert a in result
         len_result += 1
 

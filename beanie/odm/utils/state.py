@@ -29,9 +29,7 @@ def saved_state_needed(f: Callable):
         check_if_state_saved(self)
         return await f(self, *args, **kwargs)
 
-    if inspect.iscoroutinefunction(f):
-        return async_wrapper
-    return sync_wrapper
+    return async_wrapper if inspect.iscoroutinefunction(f) else sync_wrapper
 
 
 def save_state_after(f: Callable):

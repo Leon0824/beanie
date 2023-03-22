@@ -12,10 +12,7 @@ class IndexModelField(IndexModel):
 
     @classmethod
     def validate(cls, v):
-        if isinstance(v, IndexModel):
-            return v
-        else:
-            return IndexModel(v)
+        return v if isinstance(v, IndexModel) else IndexModel(v)
 
 
 class CollectionInputParameters(BaseModel):
@@ -51,9 +48,7 @@ class CollectionSettings(BaseModel):
         :param allow_index_dropping: bool - if index dropping is allowed
         :return: CollectionSettings
         """
-        # parse collection parameters
-        collection_class = getattr(document_model, "Collection", None)
-        if collection_class:
+        if collection_class := getattr(document_model, "Collection", None):
             collection_parameters = CollectionInputParameters.parse_obj(
                 vars(collection_class)
             )

@@ -54,8 +54,7 @@ class UpdateQuery(UpdateMethods, SessionMethods):
         self.upsert_insert_doc: Optional["DocType"] = None
         self.encoders: Dict[Any, Callable[[Any], Any]] = {}
         self.bulk_writer: Optional[BulkWriter] = None
-        collection_class = getattr(self.document_model, "Collection", None)
-        if collection_class:
+        if collection_class := getattr(self.document_model, "Collection", None):
             self.encoders = vars(collection_class).get("bson_encoders", {})
 
     @property
@@ -63,7 +62,7 @@ class UpdateQuery(UpdateMethods, SessionMethods):
         query: Dict[str, Any] = {}
         for expression in self.update_expressions:
             if isinstance(expression, BaseUpdateOperator):
-                query.update(expression.query)
+                query |= expression.query
             elif isinstance(expression, dict):
                 query.update(expression)
             else:
@@ -125,17 +124,16 @@ class UpdateQuery(UpdateMethods, SessionMethods):
         update_result = yield from self._update().__await__()
         if self.upsert_insert_doc is None:
             return update_result
+        if update_result is not None and update_result.matched_count == 0:
+            return (
+                yield from self.document_model.insert_one(
+                    document=self.upsert_insert_doc,
+                    session=self.session,
+                    bulk_writer=self.bulk_writer,
+                ).__await__()
+            )
         else:
-            if update_result is not None and update_result.matched_count == 0:
-                return (
-                    yield from self.document_model.insert_one(
-                        document=self.upsert_insert_doc,
-                        session=self.session,
-                        bulk_writer=self.bulk_writer,
-                    ).__await__()
-                )
-            else:
-                return update_result
+            return update_result
 
 
 class UpdateMany(UpdateQuery):

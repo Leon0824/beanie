@@ -60,7 +60,7 @@ async def preset_documents(point):
         option_1 = Option1(s="TEST")
         option_2 = Option2(f=3.14)
         union = option_1 if i % 2 else option_2
-        optional = option_2 if not i % 3 else None
+        optional = None if i % 3 else option_2
         geo = GeoObject(
             coordinates=[
                 point["longitude"] + i / 10,
