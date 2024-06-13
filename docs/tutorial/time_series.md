@@ -28,4 +28,4 @@ class Sample(Document):
 
 TimeSeriesConfig fields reflect the respective parameters of the MongoDB timeseries creation function.
 
-MongoDB documentation: https://docs.mongodb.com/manual/core/timeseries-collections/
+MongoDB documentation: [https://docs.mongodb.com/manual/core/timeseries-collections/](https://docs.mongodb.com/manual/core/timeseries-collections/)
