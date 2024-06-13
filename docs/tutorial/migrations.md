@@ -93,7 +93,7 @@ class Note(Document):
 
 ```
 
-To migrate from `OldNote` to `Note` filed `name` has to be renamed to `title`.
+To migrate from `OldNote` to `Note` field `name` has to be renamed to `title`.
 
 Forward migration:
 
